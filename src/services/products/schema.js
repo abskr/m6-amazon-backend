@@ -15,6 +15,16 @@ const ProductSchema = new Schema(
   }, { timestamps: true}
 )
 
+  ProductSchema.post('validate', function (error, doc, next) {
+    if (error) {
+      error.errorList = error.errors
+      error.httpStatusCode = 400
+      next(error)
+    } else {
+      next()
+    }
+  })
+
 ProductSchema.static('findProductWithReviews', async function(productId){
     const product = await this.findOne({ _id: productId}.populate('reviews'))
     return product
