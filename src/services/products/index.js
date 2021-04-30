@@ -3,22 +3,23 @@ import q2m from 'query-to-mongo'
 
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import multer from 'multer'
-import {v2} from 'cloudinary'
+// import {v2} from 'cloudinary'
 
 import ProductModel from './schema.js'
 const productsRouter = express.Router()
 
-const Storage = new CloudinaryStorage ({
-  cloudinary: v2,
+import cloudinary from '../cloudinary.js'
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
   params: {
-    folder: 'amazonProds'
-  }
-})
+    folder: "amazonProds",
+  },
+});
 
-const uploader = multer({
-  storage : Storage
-})
-
+const cloudinaryMulter = multer({
+  storage: storage
+});
 
 productsRouter.get('/', async (req, res, next) => {
   try {
@@ -46,9 +47,12 @@ productsRouter.get('/:productId', async (req, res, next) => {
   }
 })
 
-productsRouter.post('/', async (req, res, next) => {
+productsRouter.post('/', cloudinaryMulter.single("image"), async (req, res, next) => {
   try {
     const newProduct = new ProductModel(req.body)
+    if (req.file.path){
+      newProduct.imageUrl = req.file.path
+    }
     const {_id} = await newProduct.save()
     res.status(201).send(`data is saved with id: ${_id}`)
   } catch (error) {
