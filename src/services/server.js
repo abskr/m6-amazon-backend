@@ -4,13 +4,12 @@ import listEndpoints from 'express-list-endpoints'
 import mongoose from 'mongoose'
 
 import productsRouter from './services/products/index.js'
-import reviwesRouter from './services/products/index.js'
+//import reviewsRouter from './services/products/index.js'
 
-const {
+import {
   notFoundHandler,
   badRequestHandler,
-  genericErrorHandler,
-} = require("./errorHandlers");
+  genericErrorHandler,} from "./errorHandlers.js"
 
 const server = express();
 
@@ -36,7 +35,7 @@ server.use(cors(corsOptions));
 //server.use(cors());
 
 server.use('/products', productsRouter);
-server.use('/reviews', reviwesRouter)
+//server.use('/reviews', reviewsRouter)
 
 server.use(badRequestHandler);
 server.use(notFoundHandler);
