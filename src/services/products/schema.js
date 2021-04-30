@@ -11,8 +11,22 @@ const ProductSchema = new Schema(
     imageUrl : { type: mongoose.SchemaTypes.Url, required: true},
     price : {type: Number, required: true},
     caterogy: String,
-    reviews: [{type: Schema.Types.ObjectId, required: true.valueOf, ref:'Review'}]
+    reviews: [{type: Schema.Types.ObjectId,  ref:'Review'}]
   }, { timestamps: true}
 )
+
+ProductSchema.static('findProductWithReviews', async function(productId){
+    const product = await this.findOne({ _id: productId}.populate('reviews'))
+    return product
+})
+
+ProductSchema.static('findProductsWithReviews', async function(query){
+  const total = await this.countDocuments(query.criteria)
+  const products = await this.find(query.criteria).skip(query.options.skip).limit(query.options.limit).sort(query.options.sort).populate('reviews')
+
+  return { total, products }
+})
+
+
 
 export default model('Product', ProductSchema)
