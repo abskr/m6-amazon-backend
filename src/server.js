@@ -4,7 +4,7 @@ import listEndpoints from 'express-list-endpoints'
 import mongoose from 'mongoose'
 
 import productsRouter from './services/products/index.js'
-//import reviewsRouter from './services/products/index.js'
+import reviewsRouter from './services/products/index.js'
 
 import {
   notFoundHandler,
