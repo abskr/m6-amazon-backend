@@ -1,9 +1,23 @@
 import express from 'express'
-import mongoose from 'mongoose'
 import q2m from 'query-to-mongo'
 
-import ProductSchema from './schema.js'
+import { CloudinaryStorage } from 'multer-storage-cloudinary'
+import multer from 'multer'
+import {v2} from 'cloudinary'
+
+import ProductModel from './schema.js'
 const productsRouter = express.Router()
+
+const Storage = new CloudinaryStorage ({
+  cloudinary: v2,
+  params: {
+    folder: 'amazonProds'
+  }
+})
+
+const uploader = multer({
+  storage : Storage
+})
 
 
 productsRouter.get('/', async (req, res, next) => {
@@ -19,7 +33,7 @@ productsRouter.get('/', async (req, res, next) => {
 
 productsRouter.get('/:productId', async (req, res, next) => {
   try {
-    const product = await ProductSchema.findProductWithReviews(req.params.productId)
+    const product = await ProductsModel.findProductWithReviews(req.params.productId)
     if (!product) {
       const error = new Error()
       error.httpStatusCode = 404
