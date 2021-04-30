@@ -1,13 +1,10 @@
 import express from 'express'
 import q2m from 'query-to-mongo'
 
-<<<<<<< HEAD
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import multer from 'multer'
 import {v2} from 'cloudinary'
 
-=======
->>>>>>> andis-branch
 import ProductModel from './schema.js'
 const productsRouter = express.Router()
 
@@ -26,7 +23,7 @@ const uploader = multer({
 productsRouter.get('/', async (req, res, next) => {
   try {
     const query = q2m(req.query)
-    const { products, total} = findProductsWithReviews(query)
+    const { products, total} = await ProductModel.findProductsWithReviews(query)
     res.send({links: query.links('/products', total), products})
   } catch (error) {
     console.log(error)
@@ -36,11 +33,7 @@ productsRouter.get('/', async (req, res, next) => {
 
 productsRouter.get('/:productId', async (req, res, next) => {
   try {
-<<<<<<< HEAD
-    const product = await ProductsModel.findProductWithReviews(req.params.productId)
-=======
-    const product = await productsModel.findProductWithReviews(req.params.productId)
->>>>>>> andis-branch
+    const product = await ProductModel.findProductWithReviews(req.params.productId)
     if (!product) {
       const error = new Error()
       error.httpStatusCode = 404
@@ -66,7 +59,7 @@ productsRouter.post('/', async (req, res, next) => {
 
 productsRouter.put('/:productId', async (req, res, next) => {
   try {
-    const product = await productsModel.findByIdAndUpdate(req.params.productId, req.body, {runValidators: true, new: ture})
+    const product = await ProductModel.findByIdAndUpdate(req.params.productId, req.body, {runValidators: true, new: ture})
     if (!product) {
       const error = new Error(`UserId ${req.params.id} is not found!`)
       error.httpStatusCode = 404
