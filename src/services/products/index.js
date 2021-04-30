@@ -8,18 +8,29 @@ import multer from 'multer'
 import ProductModel from './schema.js'
 const productsRouter = express.Router()
 
-import cloudinary from '../cloudinary.js'
+import cloudinary from 'cloudinary'
 
-const storage = new CloudinaryStorage({
+const cloudStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "amazonProds",
+    folder: "amazonProd",
   },
-});
+})
+const cloudMulter = multer({
+  storage: cloudStorage
+})
 
-const cloudinaryMulter = multer({
-  storage: storage
-});
+productsRouter.post('/upload', cloudMulter.single("img"), async (req, res, next) => {
+try {
+  console.log(req.file.path)
+    res.send({
+      cloudinaryURL: req.file.path
+    })
+} catch (error) {
+  console.log(error)
+  next(error)
+}
+})
 
 productsRouter.get('/', async (req, res, next) => {
   try {
@@ -47,12 +58,12 @@ productsRouter.get('/:productId', async (req, res, next) => {
   }
 })
 
-productsRouter.post('/', cloudinaryMulter.single("image"), async (req, res, next) => {
+productsRouter.post('/', async (req, res, next) => {
   try {
     const newProduct = new ProductModel(req.body)
-    if (req.file.path){
-      newProduct.imageUrl = req.file.path
-    }
+    // if (req.file.path){
+    //   newProduct.imageUrl = req.file.path
+    // }
     const {_id} = await newProduct.save()
     res.status(201).send(`data is saved with id: ${_id}`)
   } catch (error) {
