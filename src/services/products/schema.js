@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
-const { Schema, model } = 'mongoose'
+
+const { Schema, SchemaType, model } = mongoose
 
 const ProductSchema = new Schema(
   {
@@ -9,10 +10,13 @@ const ProductSchema = new Schema(
       required: true,
       trim: true
     },
-    imageUrl : { type: mongoose.SchemaTypes.Url, required: true},
+    imageUrl : { type: String, required: true},
     price : {type: Number, required: true},
     caterogy: String,
-    reviews: [{type: Schema.Types.ObjectId,  ref:'Review'}]
+    reviews: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Review'
+    }]
   }, { timestamps: true}
 )
 
