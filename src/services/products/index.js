@@ -8,23 +8,33 @@ const productsRouter = express.Router()
 
 productsRouter.get('/', async (req, res, next) => {
   try {
-    
+    const query = q2m(req.query)
+    const { products, total} = findProductsWithReviews(query)
+    res.send({links: query.links('/products', total), products})
   } catch (error) {
-    
+    console.log(error)
+    next(error)
   }
 })
 
 productsRouter.get('/:productId', async (req, res, next) => {
   try {
-    
+    const product = await ProductSchema.findProductWithReviews(req.params.productId)
+    if (!product) {
+      const error = new Error()
+      error.httpStatusCode = 404
+      return next(error)
+    }
+    res.send(product)
   } catch (error) {
-    
+      console.log(error)
+      next(error)
   }
 })
 
 productsRouter.post('/', async (req, res, next) => {
   try {
-
+    
   } catch (error) {
 
   }
